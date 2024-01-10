@@ -45,6 +45,7 @@ public class App extends Application {
         for (int i = 0; i < COLORS.length; i++) {
             colorGrid.add(new GuessCircle(BIG_RADIUS, COLORS[i]), i, 0);
         }
+        colorGrid.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> colorGridClicked(event));
         layout.setBottom(colorGrid);
 
         Scene view = new Scene(layout, WIDTH, HEIGHT);
@@ -63,6 +64,15 @@ public class App extends Application {
             }
             GuessCircle.selected = circle;
             circle.selectCircle();
+        }
+    }
+
+    public void colorGridClicked(MouseEvent event) {
+        GuessCircle circle = (GuessCircle) event.getTarget();
+        if (GuessCircle.selected != null) {
+            GuessCircle.selected.setColor(circle.getColor());
+            GuessCircle.selected.deselectCircle();
+            GuessCircle.selected = null;
         }
     }
 }

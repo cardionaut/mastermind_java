@@ -16,12 +16,13 @@ public class GuessCircle extends Circle {
     public GuessCircle(int radius, String color) {
         super(radius, Paint.valueOf(color));
         this.setStroke(getFill());
+        this.color = color;
     }
 
     public void setColor(String color) {
-        this.color = color;
         this.setFill(Paint.valueOf(color));
         this.setStroke(getFill());
+        this.color = color;
     }
 
     public String getColor() {
