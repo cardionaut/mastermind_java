@@ -6,12 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.scene.paint.Paint;
 import mastermind.src.main.resources.guess.BigCircle;
 
 public class App extends Application {
@@ -54,7 +52,7 @@ public class App extends Application {
 
         VBox feedback = new VBox(BIG_SPACING);
         for (int i = 0; i < NUM_GUESSES; i++) {
-            Button button = new Button();
+            Button button = new Button("Ok");
             button.setMinWidth(2 * BIG_RADIUS + 1);
             button.setMinHeight(2 * BIG_RADIUS + 1);
             feedback.getChildren().add(button);

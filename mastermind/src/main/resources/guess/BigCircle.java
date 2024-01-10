@@ -5,7 +5,7 @@ import javafx.scene.paint.Paint;
 
 public class BigCircle extends Circle {
     public static BigCircle selected = null;
-    public static String defaultColor = "grey";
+    public static String defaultColor = "#9daba9";
     private String color = defaultColor;
 
     public BigCircle(int radius) {
