@@ -10,10 +10,12 @@ public class GuessCircle extends Circle {
 
     public GuessCircle(int radius) {
         super(radius, Paint.valueOf(defaultColor));
+        this.setStroke(getFill());
     }
 
     public GuessCircle(int radius, String color) {
         super(radius, Paint.valueOf(color));
+        this.setStroke(getFill());
     }
 
     public void setColor(String color) {
@@ -33,5 +35,4 @@ public class GuessCircle extends Circle {
     public void deselectCircle() {
         this.setStroke(getFill());
     }
-
 }

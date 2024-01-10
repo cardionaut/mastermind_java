@@ -11,12 +11,14 @@ import javafx.stage.Stage;
 import mastermind.src.main.resources.guess.GuessCircle;
 
 public class App extends Application {
-    private static final int WIDTH = 600;
-    private static final int HEIGHT = 800;
-    private static final int PADDING = 10;
-    private static final int GUESS_RADIUS = 20;
+    private static final int BIG_RADIUS = 20;
+    private static final int PADDING = BIG_RADIUS / 2;
+    private static final int BIG_SPACING = BIG_RADIUS / 4;
     private static final int NUM_GUESSES = 8;
-    private static final int NUM_CIRCLES = 4;
+    private static final int NUM_TO_GUESS = 4;
+    private static final String[] COLORS = { "#B03A2E", "#633974", "#21618C", "#117864", "#9A7D0A", "#935116" };
+    private static final int WIDTH = (2 * BIG_RADIUS + BIG_SPACING) * COLORS.length + PADDING * 2;
+    private static final int HEIGHT = (2 * BIG_RADIUS + BIG_SPACING) * (NUM_GUESSES + 3) + PADDING * 2;
 
     public static void main(String[] args) throws Exception {
         launch(App.class);
@@ -28,25 +30,29 @@ public class App extends Application {
 
         BorderPane layout = new BorderPane();
         layout.setPadding(new Insets(PADDING));
-        layout.setTop(new Label("Choose the correct color sequence"));
+        layout.setTop(new Label("Find the correct color sequence:"));
 
-        GridPane guesses = new GridPane();
-        guesses.setHgap(GUESS_RADIUS / 4);
-        guesses.setVgap(GUESS_RADIUS / 4);
-        for (int i = 0; i < NUM_CIRCLES; i++) {
+        GridPane guessGrid = new GridPane(BIG_SPACING, BIG_SPACING);
+        for (int i = 0; i < NUM_TO_GUESS; i++) {
             for (int j = 0; j < NUM_GUESSES; j++) {
-                guesses.add(new GuessCircle(GUESS_RADIUS), i, j);
+                guessGrid.add(new GuessCircle(BIG_RADIUS), i, j);
             }
         }
-        guesses.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> guessesClicked(event));
-        layout.setLeft(guesses);
+        guessGrid.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> guessGridClicked(event));
+        layout.setLeft(guessGrid);
+
+        GridPane colorGrid = new GridPane(BIG_SPACING, BIG_SPACING);
+        for (int i = 0; i < COLORS.length; i++) {
+            colorGrid.add(new GuessCircle(BIG_RADIUS, COLORS[i]), i, 0);
+        }
+        layout.setBottom(colorGrid);
 
         Scene view = new Scene(layout, WIDTH, HEIGHT);
         window.setScene(view);
         window.show();
     }
 
-    public void guessesClicked(MouseEvent event) {
+    public void guessGridClicked(MouseEvent event) {
         GuessCircle circle = (GuessCircle) event.getTarget();
         if (GuessCircle.selected == circle) {
             GuessCircle.selected = null;
