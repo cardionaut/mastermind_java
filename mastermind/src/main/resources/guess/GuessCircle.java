@@ -4,7 +4,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.paint.Paint;
 
 public class GuessCircle extends Circle {
-    // public static Integer[] selected = {0, 0};
     public static GuessCircle selected = null;
     public static String defaultColor = "grey";
     private String color = defaultColor;
@@ -32,7 +31,7 @@ public class GuessCircle extends Circle {
     }
 
     public void deselectCircle() {
-        this.setStroke(Paint.valueOf(defaultColor));
+        this.setStroke(getFill());
     }
 
 }
