@@ -33,12 +33,13 @@ public class App extends Application {
     public static final double WIDTH = BIG_RADIUS * 2 * COLORS.length
             + BIG_SPACING * (COLORS.length - 1)
             + PADDING * 2;
-    public static final double HEIGHT = (2 * BIG_RADIUS + BIG_STROKE_WIDTH + BIG_SPACING) * (NUM_GUESSES + 3)
-            + PADDING * 2;
+    public static final double HEIGHT = (2 * BIG_RADIUS + BIG_STROKE_WIDTH) * (NUM_GUESSES + 3)
+            + BIG_SPACING * (NUM_GUESSES + 1)
+            + PADDING;
 
     public int currentGuessRow = 0;
     public int currentGuessCol = 0;
-    
+
     private int[] solution = { 0, 1, 2, 3 };
     private int[] guess = { -1, -1, -1, -1 };
 
@@ -51,7 +52,7 @@ public class App extends Application {
         window.setTitle("Mastermind");
 
         BorderPane layout = new BorderPane();
-        layout.setPadding(new Insets(PADDING));
+        layout.setPadding(new Insets(0, PADDING, PADDING, PADDING));
 
         // guesses (left)
         GridPane guessGrid = new GridPane(BIG_SPACING, BIG_SPACING);
@@ -72,27 +73,28 @@ public class App extends Application {
         }
         layout.setRight(feedback);
 
-        // end turn button and color selection (bottom)
-        VBox bottom = new VBox(BIG_SPACING);
+        // end turn button and color selection
+        VBox top = new VBox(BIG_SPACING);
+        BorderPane.setMargin(top, new Insets(0, 0, BIG_RADIUS - PADDING, 0));
         Label info = new Label("Find the hidden code!");
         info.setPrefWidth(WIDTH - PADDING * 2);
         info.setPrefHeight(BIG_RADIUS);
         info.setFont(new Font(BIG_RADIUS));
         info.setAlignment(Pos.CENTER);
-        bottom.getChildren().add(info);
         Button endTurn = new Button("End Turn");
         endTurn.setPrefWidth(WIDTH - PADDING * 2);
         endTurn.setPrefHeight(BIG_RADIUS);
         endTurn.setFont(new Font(BIG_RADIUS));
         endTurn.setOnAction(event -> endGuess(event, info));
-        bottom.getChildren().add(endTurn);
         GridPane colorGrid = new GridPane(BIG_SPACING, BIG_SPACING);
         for (int i = 0; i < COLORS.length; i++) {
             colorGrid.add(new Circle(BIG_RADIUS, Paint.valueOf(COLORS[i])), i, 0);
         }
         colorGrid.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> colorGridClicked(event));
-        bottom.getChildren().add(colorGrid);
-        layout.setBottom(bottom);
+        top.getChildren().add(info);
+        top.getChildren().add(colorGrid);
+        top.getChildren().add(endTurn);
+        layout.setTop(top);
 
         Scene view = new Scene(layout, WIDTH, HEIGHT);
         window.setScene(view);
@@ -140,7 +142,7 @@ public class App extends Application {
             if (this.currentGuessCol < NUM_TO_GUESS - 1) {
                 this.currentGuessCol++;
                 BigCircle.selected = (BigCircle) ((GridPane) BigCircle.selected.getParent()).getChildren()
-                .get(this.currentGuessCol * NUM_GUESSES + this.currentGuessRow);
+                        .get(this.currentGuessCol * NUM_GUESSES + this.currentGuessRow);
                 BigCircle.selected.selectCircle();
             } else {
                 BigCircle.selected = null;
