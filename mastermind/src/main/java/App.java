@@ -1,7 +1,11 @@
 package mastermind.src.main.java;
 
+import java.util.Arrays;
+
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -9,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.text.Font;
 import javafx.scene.shape.Circle;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -33,6 +38,9 @@ public class App extends Application {
 
     public int currentGuessRow = 0;
     public int currentGuessCol = 0;
+    
+    private int[] solution = { 0, 1, 2, 3 };
+    private int[] guess = { -1, -1, -1, -1 };
 
     public static void main(String[] args) {
         launch(App.class);
@@ -44,7 +52,6 @@ public class App extends Application {
 
         BorderPane layout = new BorderPane();
         layout.setPadding(new Insets(PADDING));
-        layout.setTop(new Label("Find the correct color sequence:"));
 
         // guesses (left)
         GridPane guessGrid = new GridPane(BIG_SPACING, BIG_SPACING);
@@ -67,10 +74,17 @@ public class App extends Application {
 
         // end turn button and color selection (bottom)
         VBox bottom = new VBox(BIG_SPACING);
+        Label info = new Label("Find the hidden code!");
+        info.setPrefWidth(WIDTH - PADDING * 2);
+        info.setPrefHeight(BIG_RADIUS);
+        info.setFont(new Font(BIG_RADIUS));
+        info.setAlignment(Pos.CENTER);
+        bottom.getChildren().add(info);
         Button endTurn = new Button("End Turn");
         endTurn.setPrefWidth(WIDTH - PADDING * 2);
         endTurn.setPrefHeight(BIG_RADIUS);
-        endTurn.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> endGuess(event));
+        endTurn.setFont(new Font(BIG_RADIUS));
+        endTurn.setOnAction(event -> endGuess(event, info));
         bottom.getChildren().add(endTurn);
         GridPane colorGrid = new GridPane(BIG_SPACING, BIG_SPACING);
         for (int i = 0; i < COLORS.length; i++) {
@@ -122,10 +136,11 @@ public class App extends Application {
         if (BigCircle.selected != null) {
             BigCircle.selected.setColor(circle.getFill());
             BigCircle.selected.deselectCircle();
+            guess[this.currentGuessCol] = GridPane.getColumnIndex(circle);
             if (this.currentGuessCol < NUM_TO_GUESS - 1) {
                 this.currentGuessCol++;
                 BigCircle.selected = (BigCircle) ((GridPane) BigCircle.selected.getParent()).getChildren()
-                        .get(this.currentGuessCol * NUM_GUESSES + this.currentGuessRow);
+                .get(this.currentGuessCol * NUM_GUESSES + this.currentGuessRow);
                 BigCircle.selected.selectCircle();
             } else {
                 BigCircle.selected = null;
@@ -133,7 +148,15 @@ public class App extends Application {
         }
     }
 
-    public void endGuess(MouseEvent event) {
-        System.out.println("End guess");
+    public void endGuess(ActionEvent event, Label info) {
+        System.out.println(Arrays.toString(guess));
+        if (Arrays.stream(guess).anyMatch(i -> i == -1)) {
+            return;
+        }
+        if (Arrays.equals(guess, solution)) {
+            info.setText("Well done!");
+        } else {
+            info.setText("Keep trying.");
+        }
     }
 }
