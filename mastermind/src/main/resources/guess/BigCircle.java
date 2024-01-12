@@ -1,32 +1,37 @@
 package mastermind.src.main.resources.guess;
 
 import javafx.scene.shape.Circle;
+import mastermind.src.main.java.App;
 import javafx.scene.paint.Paint;
 
 public class BigCircle extends Circle {
     public static BigCircle selected = null;
-    public static String defaultColor = "#9daba9";
-    private String color = defaultColor;
+    public static final String defaultColor = App.DEFAULT_COLOR;
+    public static final double strokeWidth = App.STROKE_WIDTH;
 
-    public BigCircle(int radius) {
+    public BigCircle(double radius) {
         super(radius, Paint.valueOf(defaultColor));
+        super.setStyle("-fx-stroke-width: %f;".formatted(strokeWidth));
         this.setStroke(getFill());
     }
 
-    public BigCircle(int radius, String color) {
+    public BigCircle(double radius, String color) {
         super(radius, Paint.valueOf(color));
+        super.setStyle("-fx-stroke-width: %f;".formatted(strokeWidth));
         this.setStroke(getFill());
-        this.color = color;
     }
 
     public void setColor(String color) {
         this.setFill(Paint.valueOf(color));
         this.setStroke(getFill());
-        this.color = color;
     }
 
     public String getColor() {
-        return this.color;
+        return this.getFill().toString();
+    }
+
+    public void resetColor() {
+        this.setColor(defaultColor);
     }
 
     public void selectCircle() {
