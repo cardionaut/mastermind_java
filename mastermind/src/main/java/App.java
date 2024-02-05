@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import mastermind.src.main.resources.feedback.Feedback;
 import mastermind.src.main.resources.guess.BigCircle;
+import mastermind.src.main.resources.solution.Solution;
 
 public class App extends Application {
     public static final double BIG_RADIUS = 30.0;
@@ -40,8 +41,8 @@ public class App extends Application {
     public int currentGuessRow = 0;
     public int currentGuessCol = 0;
 
-    private int[] solution = { 0, 1, 2, 3 };
-    private int[] guess = { -1, -1, -1, -1 };
+    public static int[] solution = Solution.generateSolution();
+    public static int[] guess = { -1, -1, -1, -1 };
 
     public static void main(String[] args) {
         launch(App.class);
@@ -50,9 +51,9 @@ public class App extends Application {
     @Override
     public void start(Stage window) {
         window.setTitle("Mastermind");
-
         BorderPane layout = new BorderPane();
         layout.setPadding(new Insets(0, PADDING, PADDING, PADDING));
+        layout.getStylesheets().add(App.class.getResource("theme.css").toExternalForm());
 
         // guesses (left)
         GridPane guessGrid = new GridPane(BIG_SPACING, BIG_SPACING);
@@ -85,7 +86,7 @@ public class App extends Application {
         endTurn.setPrefWidth(WIDTH - PADDING * 2);
         endTurn.setPrefHeight(BIG_RADIUS);
         endTurn.setFont(new Font(BIG_RADIUS));
-        endTurn.setOnAction(event -> endGuess(event, info));
+        endTurn.setOnAction(event -> endGuess(event, feedback, info));
         GridPane colorGrid = new GridPane(BIG_SPACING, BIG_SPACING);
         for (int i = 0; i < COLORS.length; i++) {
             colorGrid.add(new Circle(BIG_RADIUS, Paint.valueOf(COLORS[i])), i, 0);
@@ -144,21 +145,25 @@ public class App extends Application {
                 BigCircle.selected = (BigCircle) ((GridPane) BigCircle.selected.getParent()).getChildren()
                         .get(this.currentGuessCol * NUM_GUESSES + this.currentGuessRow);
                 BigCircle.selected.selectCircle();
-            } else {
-                BigCircle.selected = null;
             }
         }
     }
 
-    public void endGuess(ActionEvent event, Label info) {
-        System.out.println(Arrays.toString(guess));
-        if (Arrays.stream(guess).anyMatch(i -> i == -1)) {
+    public void endGuess(ActionEvent event, VBox feedback, Label info) {
+        if (Arrays.stream(guess).anyMatch(i -> i == -1)) { // not all circles are filled, guess unfinished
             return;
         }
+        Feedback feedbackRow = (Feedback) feedback.getChildren().get(currentGuessRow);
+        feedbackRow.endGuess(guess);
         if (Arrays.equals(guess, solution)) {
             info.setText("Well done!");
         } else {
             info.setText("Keep trying.");
+            currentGuessRow++;
+            currentGuessCol = 0;
+            BigCircle.selected = (BigCircle) ((GridPane) BigCircle.selected.getParent()).getChildren()
+                    .get(this.currentGuessCol * NUM_GUESSES + this.currentGuessRow);
+            BigCircle.selected.selectCircle();
         }
     }
 }

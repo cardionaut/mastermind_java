@@ -1,5 +1,6 @@
 package mastermind.src.main.resources.feedback;
 
+import java.util.stream.IntStream;
 import javafx.scene.shape.Circle;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Paint;
@@ -16,6 +17,21 @@ public class Feedback extends GridPane {
             for (int j = 0; j < numToGuess / 2; j++) {
                 Circle smallCircle = new Circle(smallRadius, Paint.valueOf(defaultColor));
                 super.add(smallCircle, i, j);
+            }
+        }
+    }
+
+    public void endGuess(int[] guess) {
+        for (int i = 0; i < numToGuess; i++) {
+            final int index = i;  // for lambda
+            if (guess[i] == App.solution[i]) {
+                // correct color and position
+                Circle smallCircle = (Circle) super.getChildren().get(i);
+                smallCircle.setFill(Paint.valueOf("#242a2b"));
+            } else if (IntStream.of(App.solution).anyMatch(x -> x == guess[index])) {
+                // correct color
+                Circle smallCircle = (Circle) super.getChildren().get(i);
+                smallCircle.setFill(Paint.valueOf("#58767a"));
             }
         }
     }

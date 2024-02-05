@@ -1,4 +1,4 @@
-.root {
+/* .root {
     -fx-base: #3f474f;
     -fx-accent: #e7eff7 ;
     -fx-default-button: #7f878f ;
@@ -23,6 +23,10 @@
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
     );
+} */
+
+.button {
+    -fx-border-color: #58767a;
 }
 
 /* view.getStylesheets().add(App.class.getResource("theme.css").toExternalForm()); */
